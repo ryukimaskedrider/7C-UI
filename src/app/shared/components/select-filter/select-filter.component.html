@@ -1,0 +1,36 @@
+<mat-form-field class="w-full" appearance="outline">
+  <mat-label>{{ label }}</mat-label>
+  <mat-select
+    ngDefaultControl
+    [placeholder]="label"
+    #selectFilter
+    [formControl]="valueControl"
+    [value]="value"
+    [multiple]="multiple"
+    (selectionChange)="onSelectionChanged($event)"
+  >
+    <mat-option>
+      <ngx-mat-select-search
+        [formControl]="searchControl"
+        placeholderLabel="Search..."
+        noEntriesFoundLabel="'No records found.'"
+      ></ngx-mat-select-search>
+    </mat-option>
+
+    <mat-option
+      *ngFor="let item of filteredItems | async"
+      [value]="item.value"
+      [disabled]="item?.disabled"
+    >
+      <ng-template #defaultLabelTemplate> {{ item.label }} </ng-template>
+
+      <ng-temlate
+        [ngTemplateOutlet]="labelTemplate || defaultLabelTemplate"
+        [ngTemplateOutletContext]="{ item: item }"
+      ></ng-temlate>
+    </mat-option>
+  </mat-select>
+  <mat-error *ngIf="componentControl && componentControl.errors?.required">
+    {{ label }} is required
+  </mat-error>
+</mat-form-field>

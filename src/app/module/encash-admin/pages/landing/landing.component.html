@@ -1,0 +1,21 @@
+<div class="container mx-auto px-4">
+  <div class="py-5">
+    <div *ngIf="user.role == roles.SUPERADMIN else otherUser">
+      <h1 class="text-4xl font-bold">Encash & Voucher</h1>
+      <div class="mt-5">
+        <mat-tab-group mat-align-tabs="start">
+          <mat-tab label="ENCASH">
+            <app-encashment></app-encashment>
+          </mat-tab>
+          <mat-tab label="VOUCHER">
+            <app-voucher></app-voucher>
+          </mat-tab>
+        </mat-tab-group>
+      </div>
+    </div>
+
+    <ng-template #otherUser>
+      <app-reseller-landing></app-reseller-landing>
+    </ng-template>
+  </div>
+</div>

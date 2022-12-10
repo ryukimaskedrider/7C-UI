@@ -1,0 +1,16 @@
+<div class="flex flex-col h-screen justify-center items-center px-3">
+  <img
+    class="w-1/5"
+    src="assets/images/logo/7c-logo.png"
+    [@animate]="{value:'*',params:{scale:'0.2'}}"
+    alt="7C Logo"
+  />
+  <div class="mt-6">
+    <div class="p-10 rounded-3xl shadow-md bg-white text-center">
+      <!-- <h5 class="text-gray-900 text-xl leading-tight font-medium mb-2">Login</h5> -->
+      <p class="text-gray-700 text-base mb-4">
+        <router-outlet></router-outlet>
+      </p>
+    </div>
+  </div>
+</div>

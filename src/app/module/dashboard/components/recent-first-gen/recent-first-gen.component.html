@@ -1,0 +1,96 @@
+<div class="text-center">
+  <div
+    fxLayout="row wrap"
+    fxLayoutAlign="start center"
+  >
+    <div
+      class="py-2 w-full"
+      fxLayout="row wrap"
+      fxLayoutAlign="space-between center"
+    >
+      <h2 class="text-2xl m-0 w-2/5 text-left">Recent First Gen</h2>
+      <div class="flex items-center">
+        <div>
+          <mat-paginator
+          [hidePageSize]="true"
+          [disabled]="loading"
+          [pageSize]="pageState.limit"
+          (page)="fetchData($event)"
+        ></mat-paginator>
+        </div>
+        <app-list-menu (reload)="onReload()"></app-list-menu>
+      </div>
+    </div>
+  </div>
+
+  <mat-divider></mat-divider>
+  <mat-card-content class="relative mb-0">
+    <div class="w-full overflow-x-auto">
+      <div *ngIf="loading">
+        <mat-progress-bar
+        mode="indeterminate"
+      ></mat-progress-bar>
+      </div>
+      <table
+        mat-table
+        [dataSource]="dataSource"
+        class="w-full"
+        aria-label="Product List"
+      >
+        <ng-container matColumnDef="users.fullname">
+          <th
+            scope="col"
+            mat-header-cell
+            *matHeaderCellDef
+            class="uppercase font-bold"
+          >
+            Fullname
+          </th>
+          <td mat-cell *matCellDef="let element" class="text-left">
+            {{ element.users.fullname | titlecase }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="packageCode.membership">
+          <th
+            scope="col"
+            mat-header-cell
+            *matHeaderCellDef
+            class="uppercase font-bold"
+          >
+            Package Membership
+          </th>
+          <td mat-cell *matCellDef="let element" class="text-left">
+            {{ element.packageCode.membership || '--' }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="created_at">
+          <th
+            scope="col"
+            mat-header-cell
+            *matHeaderCellDef
+            class="uppercase font-bold"
+          >
+            Created At
+          </th>
+          <td mat-cell *matCellDef="let element" class="text-left">
+            {{ element.created_at | date:'MMM d, y' }}
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="columns"></tr>
+        <tr mat-row *matRowDef="let row; columns: columns;"></tr>
+
+        <tr class="mat-row" *matNoDataRow>
+          <td class="mat-cell" [attr.colspan]="columns.length">
+            No results found.
+          </td>
+        </tr>
+      </table>
+      <!-- <div class="text-right pt-3">
+        <a href="#" routerLink="/app/first-gen" class="text-blue-400 text-base">View More</a>
+      </div> -->
+    </div>
+  </mat-card-content>
+</div>

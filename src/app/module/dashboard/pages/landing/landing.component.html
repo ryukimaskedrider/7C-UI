@@ -1,0 +1,22 @@
+<div>
+  <div class="bg-slate-200" [ngClass]="{'sm:h-[50vh]': user.role == roles.SUPERADMIN}">
+    <div class="container mx-auto px-4 py-5">
+      <h1 class="text-4xl font-bold">Overview</h1>
+      <app-over-view></app-over-view>
+    </div>
+  </div>
+
+  <div class="bg-white py-5 flex flex-col sm:h-[60vh]">
+    <div class="container mx-auto px-4">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+        <div *ngIf="user.role != roles.SUPERADMIN">
+          <app-recent-points></app-recent-points>
+        </div>
+
+        <div *ngIf="user.role == roles.RESELLER">
+          <app-recent-first-gen></app-recent-first-gen>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

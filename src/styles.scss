@@ -1,0 +1,41 @@
+// /* You can add global styles to this file, and also import other style files */
+// @tailwind base;
+// @tailwind components;
+// @tailwind utilities;
+
+// html, body { height: 100%; }
+// body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+// //input outline color
+// .mat-form-field-appearance-outline .mat-form-field-outline {
+//   color: #999999 !important;
+// }
+
+// .mat-form-field-appearance-outline.mat-focused .mat-form-field-outline-thick {
+//   color: #166534 !important;
+// }
+
+// .mat-form-field-appearance-outline.mat-form-field-invalid.mat-form-field-invalid .mat-form-field-outline-thick{
+//   color: red!important;
+//   opacity: 0.8!important;
+// }
+
+// .mat-input-element {
+//   caret-color: #166534 !important;
+// }
+
+// // mat-label normal state style
+// .mat-form-field-label {
+//   color: rgba(0,0,0,.6)!important;
+//   // color: $mainColor!important;
+// }
+
+// // mat-label focused style
+// .mat-form-field.mat-focused .mat-form-field-label {
+//   color: #166534 !important;
+// }
+
+// // mat-label error style
+// .mat-form-field.mat-form-field-invalid .mat-form-field-label {
+//   color: red !important;
+// }

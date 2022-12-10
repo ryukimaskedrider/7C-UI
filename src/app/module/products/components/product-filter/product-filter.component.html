@@ -1,0 +1,121 @@
+<div
+  @expandCollapse
+  *ngIf="showPanel"
+  class="py-5"
+>
+  <div class="text-left px-2">Filters</div>
+  <div>
+    <form
+      #filterForm="ngForm"
+      [formGroup]="form"
+      (ngSubmit)="form.valid && applyFilter(form.value)"
+    >
+      <div fxLayout="row wrap">
+        <mat-form-field
+          appearance="outline"
+          class="p-1"
+          fxFlex="100"
+          fxFlex.gt-sm="25"
+        >
+          <mat-label>Name</mat-label>
+          <input formControlName="name" matInput placeholder="Name" />
+          <mat-error *ngIf="nameControl.errors?.alphaspace">
+            Invalid Name
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field
+          appearance="outline"
+          class="p-1"
+          fxFlex="100"
+          fxFlex.gt-sm="25"
+        >
+          <mat-label>Personal Points</mat-label>
+          <input formControlName="personal_points" matInput placeholder="Personal Points" />
+          <mat-error *ngIf="personalPointsControl.errors?.numeric">
+            Invalid Personal Points.
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field
+          appearance="outline"
+          class="p-1"
+          fxFlex="100"
+          fxFlex.gt-sm="25"
+        >
+          <mat-label>Upline Points</mat-label>
+          <input formControlName="upline_points" matInput placeholder="Upline Points" />
+          <mat-error *ngIf="uplinePointsControl.errors?.numeric">
+            Invalid Upline Points.
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field
+          appearance="outline"
+          class="p-1"
+          fxFlex="100"
+          fxFlex.gt-sm="25"
+        >
+          <mat-label>Created</mat-label>
+          <mat-date-range-input
+            [rangePicker]="appRangePicker"
+            [min]="minDate"
+            [max]="maxDate"
+          >
+            <input
+              matStartDate
+              formControlName="date_from"
+              placeholder="Start Date"
+              matInput
+              aria-label="Start Date"
+              readonly
+            />
+            <input
+              matEndDate
+              formControlName="date_to"
+              placeholder="End Date"
+              matInput
+              aria-label="End Date"
+              readonly
+            />
+          </mat-date-range-input>
+
+          <mat-datepicker-toggle
+            matSuffix
+            [for]="appRangePicker"
+          ></mat-datepicker-toggle>
+          <mat-date-range-picker #appRangePicker></mat-date-range-picker>
+
+          <mat-error
+            *ngIf="dateFromControl.errors?.date || dateToControl.errors?.date"
+          >
+            Invalid Date
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div fxLayout="row" fxLayoutAlign="end">
+        <button
+          type="button"
+          color="warn"
+          mat-stroked-button
+          class="btn-base"
+          (click)="clearFilters()"
+        >
+          Clear Filter
+          <mat-icon>close</mat-icon>
+        </button>
+        <button
+          type="submit"
+          color="primary"
+          mat-flat-button
+          class="ml-2 btn-base"
+          [disabled]="!form.valid"
+        >
+          Apply Filter
+          <mat-icon class="material-icons-outlined">filter_alt</mat-icon>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

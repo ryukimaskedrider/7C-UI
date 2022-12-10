@@ -1,0 +1,192 @@
+<div class="py-5">
+  <h1 class="text-4xl font-bold">Package</h1>
+
+  <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-3">
+    <!-- Fields -->
+    <div>
+      <div class="p-5 sm:p-10 rounded-3xl shadow-md bg-white text-center">
+        <div
+          fxLayout="row wrap"
+          fxLayoutAlign="start center"
+        >
+          <div
+            class="py-2 w-full"
+            fxLayout="row wrap"
+            fxLayoutAlign="start center"
+          >
+            <h2 class="text-2xl m-0">Add</h2>
+            <span class="flex-align-end"></span>
+          </div>
+        </div>
+        <mat-divider></mat-divider>
+        <div class="mt-5">
+            <form
+              role="form"
+              id="package__form"
+              [formGroup]="form"
+              (ngSubmit)="form.valid && onSubmit(form.value)"
+            >
+
+            <mat-form-field appearance="outline" color="primary" class="w-full">
+              <mat-label>Membership</mat-label>
+              <mat-select [formControl]="membershipIdControl" name="membership">
+                <mat-option>
+                </mat-option>
+                <mat-option
+                  *ngFor="let item of membershipOptions"
+                  [value]="item.id"
+                >
+                  {{item.name}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" color="primary" class="w-full">
+              <mat-label>Package Name</mat-label>
+              <input
+                type="text"
+                formControlName="name"
+                placeholder="Package Name"
+                matInput
+                aria-label="Package Name"
+              />
+              <mat-error *ngIf="nameControl.errors?.required">
+                Package Name is required
+              </mat-error>
+              <mat-error *ngIf="nameControl.errors?.minlength">
+                Package Name min length is 4
+              </mat-error>
+            </mat-form-field>
+            <div class="mt-8">
+              <button
+                  class="w-full"
+                  type="submit"
+                  mat-raised-button
+                  color="primary"
+                  [disabled]="form.invalid || submitLoading"
+                >
+                Submit
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- List -->
+    <div class="col-span-2">
+      <div class="p-5 sm:p-10 rounded-3xl shadow-md bg-white text-center">
+        <div
+          fxLayout="row wrap"
+          fxLayoutAlign="start center"
+        >
+          <div
+            class="py-2 w-full"
+            fxLayout="row wrap"
+            fxLayoutAlign="space-between center"
+          >
+            <h2 class="text-2xl m-0">List</h2>
+            <div>
+              <button
+                mat-icon-button
+                color="accent"
+                (click)="filterPanel = !filterPanel"
+                [matTooltip]="filterPanel ? 'Close Filter Panel' : 'Open Filter Panel'"
+                [matTooltipPosition]="'above'"
+                type="button"
+              >
+                <mat-icon>{{ filterPanel ? 'close' : 'filter_list' }}</mat-icon>
+              </button>
+              <app-list-menu (reload)="onReload()"></app-list-menu>
+            </div>
+          </div>
+        </div>
+        <app-package-filter
+          [memberships]="membershipOptions"
+          [showPanel]="filterPanel"
+          (appFilter)="onAppFilter($event)"
+          (appClearFilter)="onAppFilteredClear($event)"
+        ></app-package-filter>
+        <mat-divider></mat-divider>
+        <mat-card-content class="relative mb-0">
+          <div class="w-full overflow-x-auto">
+            <div *ngIf="loading">
+              <mat-progress-bar
+              mode="indeterminate"
+            ></mat-progress-bar>
+            </div>
+            <table
+              mat-table
+              [dataSource]="dataSource"
+              matSort
+              (matSortChange)="onSort($event)"
+              class="w-full"
+              aria-label="Package List"
+            >
+
+              <ng-container matColumnDef="membership.name">
+                <th
+                  scope="col"
+                  mat-header-cell
+                  *matHeaderCellDef
+                  mat-sort-header
+                  class="uppercase font-bold"
+                >
+                  Membership
+                </th>
+                <td mat-cell *matCellDef="let element" class="uppercase text-left">
+                  {{ element.membership.name ?? '--' }}
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="name">
+                <th
+                  scope="col"
+                  mat-header-cell
+                  *matHeaderCellDef
+                  mat-sort-header
+                  class="uppercase font-bold"
+                >
+                Package Name
+                </th>
+                <td mat-cell *matCellDef="let element" class="uppercase text-left">
+                  {{ element.name }}
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="created_at">
+                <th
+                  scope="col"
+                  mat-header-cell
+                  *matHeaderCellDef
+                  mat-sort-header
+                  class="uppercase font-bold"
+                >
+                  Created At
+                </th>
+                <td mat-cell *matCellDef="let element" class="text-left">
+                  {{ element.created_at | date:'MMM d, y' }}
+                </td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="columns"></tr>
+              <tr mat-row *matRowDef="let row; columns: columns;"></tr>
+
+              <tr class="mat-row" *matNoDataRow>
+                <td class="mat-cell" [attr.colspan]="columns.length">
+                  No results found.
+                </td>
+              </tr>
+            </table>
+          </div>
+        </mat-card-content>
+        <mat-paginator
+          [disabled]="loading"
+          [pageSizeOptions]="pageSizeOPtions"
+          [pageSize]="pageState.limit"
+          (page)="fetchData($event)"
+        ></mat-paginator>
+      </div>
+    </div>
+  </div>
+</div>

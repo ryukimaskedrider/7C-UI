@@ -1,0 +1,150 @@
+<div
+  @expandCollapse
+  *ngIf="showPanel"
+  class="py-5"
+>
+  <div class="text-left px-2">Filters</div>
+  <div>
+    <form
+      #filterForm="ngForm"
+      [formGroup]="form"
+      (ngSubmit)="form.valid && applyFilter(form.value)"
+    >
+      <div fxLayout="row wrap">
+        <mat-form-field
+          appearance="outline"
+          class="p-1"
+          fxFlex="100"
+          fxFlex.gt-sm="33.3"
+        >
+          <mat-label>Code</mat-label>
+          <input formControlName="code" matInput placeholder="Code" />
+          <mat-error *ngIf="codeControl.errors?.alphaspace">
+            Invalid Code
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field
+          appearance="outline"
+          class="p-1"
+          fxFlex="100"
+          fxFlex.gt-sm="33.3"
+        >
+          <mat-label>Name</mat-label>
+          <input formControlName="withPackageName" matInput placeholder="Name" />
+          <mat-error *ngIf="nameControl.errors?.alphaspace">
+            Invalid Name
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field
+          appearance="outline"
+          class="p-1"
+          fxFlex="100"
+          fxFlex.gt-sm="33.3"
+          >
+          <mat-label>Status</mat-label>
+          <mat-select
+            matSelect
+            placeholder="Status"
+            formControlName="status"
+          >
+            <mat-option
+              *ngFor="let item of statusList"
+              [value]="item.value"
+            >
+              {{ item.label }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <!-- <app-select-filter
+          label="Status"
+          ngDefaultControl
+          formControlName="status"
+          [itemList]="statusList"
+          [multiple]="false"
+          class="w-full p-1"
+          fxFlex="100"
+          fxFlex.gt-sm="25"
+        ></app-select-filter> -->
+
+        <mat-form-field
+          appearance="outline"
+          class="p-1"
+          fxFlex="100"
+          fxFlex.gt-sm="50"
+        >
+          <mat-label>Used By</mat-label>
+          <input formControlName="withUsedBy" matInput placeholder="Used By" />
+        </mat-form-field>
+
+        <mat-form-field
+          appearance="outline"
+          class="p-1"
+          fxFlex="100"
+          fxFlex.gt-sm="50"
+        >
+          <mat-label>Date Used</mat-label>
+          <mat-date-range-input
+            [rangePicker]="appRangePicker"
+            [min]="minDate"
+            [max]="maxDate"
+          >
+            <input
+              matStartDate
+              formControlName="used_date_from"
+              placeholder="Start Date"
+              matInput
+              aria-label="Start Date"
+              readonly
+            />
+            <input
+              matEndDate
+              formControlName="used_date_to"
+              placeholder="End Date"
+              matInput
+              aria-label="End Date"
+              readonly
+            />
+          </mat-date-range-input>
+
+          <mat-datepicker-toggle
+            matSuffix
+            [for]="appRangePicker"
+          ></mat-datepicker-toggle>
+          <mat-date-range-picker #appRangePicker></mat-date-range-picker>
+
+          <mat-error
+            *ngIf="usedDateFromControl.errors?.date || usedDateToControl.errors?.date"
+          >
+            Invalid Date
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div fxLayout="row" fxLayoutAlign="end">
+        <button
+          type="button"
+          color="warn"
+          mat-stroked-button
+          class="btn-base"
+          (click)="clearFilters()"
+        >
+          Clear Filter
+          <mat-icon>close</mat-icon>
+        </button>
+        <button
+          type="submit"
+          color="primary"
+          mat-flat-button
+          class="ml-2 btn-base"
+          [disabled]="!form.valid"
+        >
+          Apply Filter
+          <mat-icon class="material-icons-outlined">filter_alt</mat-icon>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

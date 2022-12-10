@@ -1,0 +1,83 @@
+$green: #177f3d;
+$grey: #ecedef;
+$black: #343434;
+
+.voucher__container {
+  width: 100% !important;
+}
+
+.cardWrap {
+  color: #fff;
+  border: #343434;
+  display: flex;
+}
+
+.card {
+  background: linear-gradient(to bottom, $green 0%, $green 26%, $grey 26%, $grey 100%);
+  position: relative;
+  padding: 1em;
+}
+
+.cardLeft {
+  border-top-left-radius: 8px;
+  border-bottom-left-radius: 8px;
+  border: #343434;
+}
+
+.cardRight {
+  border-left: .18em dashed #fff;
+  border-top-right-radius: 8px;
+  border-bottom-right-radius: 8px;
+  &:before,
+  &:after {
+    content: "";
+    position: absolute;
+    display: block;
+    width: .9em;
+    height: .9em;
+    background: #fff;
+    border-radius: 50%;
+    left: -.5em;
+  }
+  &:before {
+    top: -.4em;
+  }
+  &:after {
+  bottom: -.4em;
+  }
+}
+
+.title {
+  margin: 1em 0 0 0;
+  text-transform: uppercase;
+  font-weight: normal;
+  div {
+    color: #525252;
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+   }
+  span {
+    font-size: .7em;
+    color: #a2aeae;
+  }
+}
+
+.name {
+  line-height: 0;
+  margin: .7em 0 0 0;
+  span {
+    font-size: .7em;
+    color: #a2aeae;
+  }
+}
+
+.button {
+  text-align: center;
+  text-transform: uppercase;
+  color: $green;
+  margin: 50px 0 0 0;
+  font-size: 1em;
+}

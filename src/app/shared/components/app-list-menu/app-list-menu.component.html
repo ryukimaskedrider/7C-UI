@@ -1,0 +1,18 @@
+<span>
+  <button
+    mat-icon-button
+    color="accent"
+    [matMenuTriggerFor]="menu"
+    #menuTrigger="matMenuTrigger"
+  >
+    <mat-icon>more_vert</mat-icon>
+  </button>
+</span>
+<mat-menu #menu="matMenu" xPosition="before" overlapTrigger="true">
+  <span (mouseleave)="menuTrigger.closeMenu()">
+    <button mat-menu-item (click)="onReload()">
+      <mat-icon>refresh</mat-icon>
+      <span>Reload Data</span>
+    </button>
+  </span>
+</mat-menu>

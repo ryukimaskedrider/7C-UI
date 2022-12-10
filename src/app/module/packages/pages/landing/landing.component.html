@@ -1,0 +1,5 @@
+<div class="container mx-auto px-4">
+  <app-package (updatePackageEvent)="updatePackageOptions($event)"></app-package>
+
+  <app-package-code [updatePackageOptions]="isUpdate"></app-package-code>
+</div>

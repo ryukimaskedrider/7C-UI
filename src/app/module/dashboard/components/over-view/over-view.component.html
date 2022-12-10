@@ -1,0 +1,33 @@
+<div class="my-5">
+  <div class="text-center">
+    <div *ngIf="user?.role != roles.SUPERADMIN">
+      <p class="text-green-700 font-bold text-4xl">{{ user?.fullName }}</p>
+      <p class="italic text-xl pt-1">{{ user?.membership | uppercase }} / {{ user?.rank | uppercase }}</p>
+    </div>
+
+    <div class="my-10">
+      <div class="grid grid-cols-1 gap-4 sm:grid-cols-5">
+        <div class="text-left">
+          <p class="font-bold">Total Income</p>
+          <p class="font-semibold text-3xl">{{ summary?.total_income | currency:'PHP':'symbol-narrow'}}</p>
+        </div>
+        <div class="text-left">
+          <p class="font-bold">Total Points</p>
+          <p class="font-semibold text-3xl">{{ summary?.total_points}}</p>
+        </div>
+        <div class="text-left">
+          <p class="font-bold">Total First Gen</p>
+          <p class="font-semibold text-3xl">{{ summary?.total_users}} Users</p>
+        </div>
+        <div class="text-left" *ngIf="user?.role != roles.SUPERADMIN">
+          <p class="font-bold">Total Available Income</p>
+          <p class="font-semibold text-3xl">{{ summary?.total_available_income | currency:'PHP':'symbol-narrow'}}</p>
+        </div>
+        <div class="text-left">
+          <p class="font-bold">Total Encash</p>
+          <p class="font-semibold text-3xl">{{ summary?.total_encash | currency:'PHP':'symbol-narrow'}}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

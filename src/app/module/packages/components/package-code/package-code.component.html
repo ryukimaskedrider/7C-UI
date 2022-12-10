@@ -1,0 +1,230 @@
+<div class="py-5">
+  <h1 class="text-4xl font-bold">Packages Code</h1>
+
+  <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-3">
+    <!-- Fields -->
+    <div>
+      <div class="p-5 sm:p-10 rounded-3xl shadow-md bg-white text-center">
+        <div
+          fxLayout="row wrap"
+          fxLayoutAlign="start center"
+        >
+          <div
+            class="py-2 w-full"
+            fxLayout="row wrap"
+            fxLayoutAlign="start center"
+          >
+            <h2 class="text-2xl m-0">Generate</h2>
+            <span class="flex-align-end"></span>
+          </div>
+        </div>
+        <mat-divider></mat-divider>
+        <div class="mt-5">
+            <form
+              role="form"
+              id="product__form"
+              [formGroup]="packageCodeForm"
+              (ngSubmit)="packageCodeForm.valid && onSubmit(packageCodeForm.value)"
+            >
+
+            <mat-form-field appearance="outline" color="primary" class="w-full">
+              <mat-label>Package</mat-label>
+              <mat-select [formControl]="packageIdControl" name="product">
+                <mat-option>
+                  <ngx-mat-select-search
+                    ngDefaultControl
+                    [formControl]="searchControl"
+                    placeholderLabel="Search..."
+                    noEntriesFoundLabel="'No records found.'"
+                  ></ngx-mat-select-search>
+                </mat-option>
+                <mat-option
+                  *ngFor="let item of filteredItems | async"
+                  [value]="item.value"
+                  [disabled]="item?.disabled"
+                >
+                  {{item.label}}
+                </mat-option>
+              </mat-select>
+              <mat-error *ngIf="packageIdControl.errors?.required">
+                Product Name is required
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" color="primary" class="w-full">
+              <mat-label>Count</mat-label>
+              <input
+                matInput
+                formControlName="value"
+                type="text"
+                placeholder="Count"
+                aria-label="Count"
+              />
+              <mat-error *ngIf="valueControl.errors?.required">
+                Count is required
+              </mat-error>
+              <mat-error *ngIf="valueControl.errors?.numeric">
+                Count is numeric only
+              </mat-error>
+            </mat-form-field>
+            <div class="mt-8">
+              <button
+                  class="w-full"
+                  type="submit"
+                  mat-raised-button
+                  color="primary"
+                  [disabled]="packageCodeForm.invalid || submitLoading"
+                >
+                Submit
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- List -->
+    <div class="col-span-2">
+      <div class="p-5 sm:p-10 rounded-3xl shadow-md bg-white text-center">
+        <div
+          fxLayout="row wrap"
+          fxLayoutAlign="start center"
+        >
+          <div
+            class="py-2 w-full"
+            fxLayout="row wrap"
+            fxLayoutAlign="space-between center"
+          >
+            <h2 class="text-2xl m-0">List</h2>
+            <div>
+              <button
+                mat-icon-button
+                color="accent"
+                (click)="filterPanel = !filterPanel"
+                [matTooltip]="filterPanel ? 'Close Filter Panel' : 'Open Filter Panel'"
+                [matTooltipPosition]="'above'"
+                type="button"
+              >
+                <mat-icon>{{ filterPanel ? 'close' : 'filter_list' }}</mat-icon>
+              </button>
+              <app-list-menu (reload)="onReload()"></app-list-menu>
+            </div>
+          </div>
+        </div>
+        <app-package-code-filter
+          [showPanel]="filterPanel"
+          (appFilter)="onAppFilter($event)"
+          (appClearFilter)="onAppFilteredClear($event)"
+        ></app-package-code-filter>
+        <mat-divider></mat-divider>
+        <mat-card-content class="relative mb-0">
+          <div class="w-full overflow-x-auto">
+            <div *ngIf="loading">
+              <mat-progress-bar
+              mode="indeterminate"
+            ></mat-progress-bar>
+            </div>
+            <table
+              mat-table
+              [dataSource]="dataSource"
+              matSort
+              (matSortChange)="onSort($event)"
+              class="w-full"
+              aria-label="Product List"
+            >
+              <ng-container matColumnDef="code">
+                <th
+                  scope="col"
+                  mat-header-cell
+                  *matHeaderCellDef
+                  mat-sort-header
+                  class="uppercase font-bold"
+                >
+                  Code
+                </th>
+                <td mat-cell *matCellDef="let element" class="uppercase text-left">
+                  {{ element.code }}
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="package.name">
+                <th
+                  scope="col"
+                  mat-header-cell
+                  *matHeaderCellDef
+                  mat-sort-header
+                  class="uppercase font-bold"
+                >
+                  Package Name
+                </th>
+                <td mat-cell *matCellDef="let element" class="uppercase text-left">
+                  {{ element.package.name }}
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="status">
+                <th
+                  scope="col"
+                  mat-header-cell
+                  *matHeaderCellDef
+                  mat-sort-header
+                  class="uppercase font-bold"
+                >
+                  Status
+                </th>
+                <td mat-cell *matCellDef="let element" class="uppercase text-left">
+                  {{ element.status }}
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="usesBy.used_by">
+                <th
+                  scope="col"
+                  mat-header-cell
+                  *matHeaderCellDef
+                  mat-sort-header
+                  class="uppercase font-bold"
+                >
+                  Used By
+                </th>
+                <td mat-cell *matCellDef="let element" class="uppercase text-left">
+                  {{ element.usesBy.used_by ?? '--' }}
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="date_used">
+                <th
+                  scope="col"
+                  mat-header-cell
+                  *matHeaderCellDef
+                  mat-sort-header
+                  class="uppercase font-bold"
+                >
+                  Date Used
+                </th>
+                <td mat-cell *matCellDef="let element" class="text-left">
+                  {{ element.date_used ? (element.date_used | date:'MMM d, y') : '--'}}
+                </td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="columns"></tr>
+              <tr mat-row *matRowDef="let row; columns: columns;"></tr>
+
+              <tr class="mat-row" *matNoDataRow>
+                <td class="mat-cell" [attr.colspan]="columns.length">
+                  No results found.
+                </td>
+              </tr>
+            </table>
+          </div>
+        </mat-card-content>
+        <mat-paginator
+          [disabled]="loading"
+          [pageSizeOptions]="pageSizeOPtions"
+          [pageSize]="pageState.limit"
+          (page)="fetchData($event)"
+        ></mat-paginator>
+      </div>
+    </div>
+  </div>
+</div>

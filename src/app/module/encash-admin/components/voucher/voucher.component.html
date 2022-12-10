@@ -1,0 +1,289 @@
+<div class="container mx-auto px-4">
+  <div class="py-5">
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-3">
+      <!-- Fields -->
+      <div>
+        <div class="p-5 sm:p-10 rounded-3xl shadow-md bg-white text-center">
+          <div
+            fxLayout="row wrap"
+            fxLayoutAlign="start center"
+          >
+            <div
+              class="py-2 w-full"
+              fxLayout="row wrap"
+              fxLayoutAlign="start center"
+            >
+              <h2 class="text-2xl m-0">{{idControl.value ? 'Edit' : 'Add'}}</h2>
+              <span class="flex-align-end"></span>
+            </div>
+          </div>
+          <mat-divider></mat-divider>
+          <div class="mt-5">
+            <form
+              role="form"
+              id="product__form"
+              [formGroup]="form"
+              (ngSubmit)="form.valid && onSubmit(form.value)"
+            >
+              <ng-container *ngIf="idControl.value; else select">
+                <mat-form-field appearance="outline" color="primary" class="w-full">
+                  <mat-label>Voucher Category</mat-label>
+                  <input
+                    type="text"
+                    formControlName="voucher_category_id"
+                    placeholder="Voucher Category"
+                    matInput
+                    aria-label="Voucher Category"
+                    readonly
+                  />
+                </mat-form-field>
+              </ng-container>
+              <ng-template #select>
+                <mat-form-field appearance="outline" color="primary" class="w-full">
+                  <mat-label>Voucher Category</mat-label>
+                  <mat-select [formControl]="voucherCategoryIdControl" name="voucherCategory" #select>
+                    <mat-option
+                      *ngFor="let category of voucherCategoryOptions"
+                      [value]="category.id"
+                    >
+                      {{category.name}}
+                    </mat-option>
+                  </mat-select>
+                  <mat-error *ngIf="voucherCategoryIdControl.errors?.required">
+                    Voucher Category is required
+                  </mat-error>
+                </mat-form-field>
+              </ng-template>
+
+              <mat-form-field appearance="outline" color="primary" class="w-full">
+                <mat-label>Description</mat-label>
+                <input
+                  type="text"
+                  formControlName="description"
+                  placeholder="Description"
+                  matInput
+                  aria-label="Description"
+                />
+                <mat-error *ngIf="descriptionControl.errors?.required">
+                  Description is required
+                </mat-error>
+                <mat-error *ngIf="descriptionControl.errors?.minlength">
+                  Description min length is 4
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" color="primary" class="w-full">
+                <mat-label>Amount</mat-label>
+                <input
+                  matInput
+                  formControlName="points"
+                  type="text"
+                  placeholder="Amount"
+                  aria-label="Amount"
+                />
+                <mat-error *ngIf="pointsControl.errors?.required">
+                  Amount is required
+                </mat-error>
+                <mat-error *ngIf="pointsControl.errors?.numeric">
+                  Amount must be numeric
+                </mat-error>
+              </mat-form-field>
+
+              <div class="mt-5">
+                <button
+                    class="w-full"
+                    type="submit"
+                    mat-raised-button
+                    color="primary"
+                    [disabled]="form.invalid || submitLoading"
+                  >
+                  {{ idControl.value ? 'Update' : 'Submit' }}
+                </button>
+                <div *ngIf="idControl.value" class="mt-5">
+                  <button
+                      class="w-full"
+                      type="submit"
+                      mat-raised-button
+                      color="secondary"
+                      (click)="onCancel()"
+                    >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- List -->
+      <div class="col-span-2">
+        <div class="p-5 sm:p-10 rounded-3xl shadow-md bg-white text-center">
+          <div
+            fxLayout="row wrap"
+            fxLayoutAlign="start center"
+          >
+            <div
+              class="py-2 w-full"
+              fxLayout="row wrap"
+              fxLayoutAlign="space-between center"
+            >
+              <h2 class="text-2xl m-0">List</h2>
+              <div>
+                <button
+                  mat-icon-button
+                  color="accent"
+                  (click)="filterPanel = !filterPanel"
+                  [matTooltip]="filterPanel ? 'Close Filter Panel' : 'Open Filter Panel'"
+                  [matTooltipPosition]="'above'"
+                  type="button"
+                >
+                  <mat-icon>{{ filterPanel ? 'close' : 'filter_list' }}</mat-icon>
+                </button>
+                <app-list-menu (reload)="onReload()"></app-list-menu>
+              </div>
+            </div>
+          </div>
+
+          <app-voucher-filter
+            [categories]="voucherCategoryOptions"
+            [showPanel]="filterPanel"
+            (appFilter)="onAppFilter($event)"
+            (appClearFilter)="onAppFilteredClear($event)"
+          ></app-voucher-filter>
+
+          <mat-divider></mat-divider>
+          <mat-card-content class="relative mb-0">
+            <div class="w-full overflow-x-auto">
+              <div *ngIf="loading">
+                <mat-progress-bar
+                mode="indeterminate"
+              ></mat-progress-bar>
+              </div>
+              <table
+                mat-table
+                [dataSource]="dataSource"
+                matSort
+                (matSortChange)="onSort($event)"
+                class="w-full"
+                aria-label="Product List"
+              >
+
+                <ng-container matColumnDef="id">
+                  <th
+                    scope="col"
+                    mat-header-cell
+                    *matHeaderCellDef
+                    mat-sort-header
+                    class="uppercase font-bold"
+                  >
+                    ID
+                  </th>
+                  <td mat-cell *matCellDef="let element" class="uppercase text-left">
+                    {{ element.id }}
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="voucherCategory.name">
+                  <th
+                    scope="col"
+                    mat-header-cell
+                    *matHeaderCellDef
+                    mat-sort-header
+                    class="uppercase font-bold"
+                  >
+                    Category
+                  </th>
+                  <td mat-cell *matCellDef="let element" class="text-left">
+                    {{ element.voucherCategory.name || '--' }}
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="description">
+                  <th
+                    scope="col"
+                    mat-header-cell
+                    *matHeaderCellDef
+                    mat-sort-header
+                    class="uppercase font-bold"
+                  >
+                    Description
+                  </th>
+                  <td mat-cell *matCellDef="let element" class="text-left">
+                    {{ element.description || '--' }}
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="points">
+                  <th
+                    scope="col"
+                    mat-header-cell
+                    *matHeaderCellDef
+                    mat-sort-header
+                    class="uppercase font-bold"
+                  >
+                    Amount
+                  </th>
+                  <td mat-cell *matCellDef="let element" class="text-left">
+                    {{ element.points | currency:'PHP':'symbol-narrow'  }}
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="created_at">
+                  <th
+                    scope="col"
+                    mat-header-cell
+                    *matHeaderCellDef
+                    mat-sort-header
+                    class="uppercase font-bold"
+                  >
+                    Created At
+                  </th>
+                  <td mat-cell *matCellDef="let element" class="text-left">
+                    {{ element.created_at | date:'MMM d, y' }}
+                  </td>
+                </ng-container>
+
+                <!-- ACTION Column -->
+                <ng-container matColumnDef="action">
+                  <th scope="col"
+                    mat-header-cell
+                    *matHeaderCellDef
+                    class="uppercase font-bold">
+                    Action
+                  </th>
+                  <td mat-cell *matCellDef="let element">
+                    <button
+                      mat-icon-button
+                      class="text-red-600"
+                      aria-label="Action Menu"
+                      (click)="onDelete(element.id)"
+                    >
+                      <mat-icon>delete</mat-icon>
+                    </button>
+                  </td>
+                </ng-container>
+
+
+                <tr mat-header-row *matHeaderRowDef="columns"></tr>
+                <tr mat-row *matRowDef="let row; columns: columns;" class="hover:bg-blue-200 cursor-pointer" (click)="onEdit(row)"></tr>
+
+                <tr class="mat-row" *matNoDataRow>
+                  <td class="mat-cell" [attr.colspan]="columns.length">
+                    No results found.
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </mat-card-content>
+          <mat-paginator
+            [disabled]="loading"
+            [pageSizeOptions]="pageSizeOPtions"
+            [pageSize]="pageState.limit"
+            (page)="fetchData($event)"
+          ></mat-paginator>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

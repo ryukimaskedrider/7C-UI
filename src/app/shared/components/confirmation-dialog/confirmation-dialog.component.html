@@ -1,0 +1,33 @@
+<mat-dialog-content>
+	<p>
+		{{message}}
+	</p>
+  <form
+    *ngIf="hasReason"
+    class="mt-5"
+    role="form"
+    id="form"
+    [formGroup]="form"
+    (ngSubmit)="form.valid && onConfirmClick()">
+    <mat-form-field appearance="outline" color="primary" class="w-full">
+      <mat-label>Reason</mat-label>
+      <input
+        type="text"
+        formControlName="reason"
+        placeholder="Reason"
+        matInput
+        aria-label="Reason"
+      />
+      <mat-error *ngIf="reasonControl.errors?.required">
+        Reason is required
+      </mat-error>
+      <mat-error *ngIf="reasonControl.errors?.minlength">
+        Reason min length is 4
+      </mat-error>
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions align="center" [ngClass]="{'mt-5': !hasReason}">
+	<button mat-raised-button mat-dialog-close tabindex="-1">{{cancelButtonText}}</button>
+	<button *ngIf="confirmButtonText" mat-raised-button color="primary" (click)="onConfirmClick()" tabindex="1">{{confirmButtonText}}</button>
+</mat-dialog-actions>

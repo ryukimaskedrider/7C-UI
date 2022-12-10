@@ -1,0 +1,51 @@
+::ng-deep .notification {
+  @apply w-full shadow-xl rounded-md max-w-sm border-l-4 p-4 my-3 bg-white #{'!important'};
+
+  &.notification--success {
+    @apply border-green-500;
+
+    .notification__icon {
+      @apply text-green-500;
+    }
+  }
+
+  &.notification--info {
+    @apply border-blue-500;
+
+    .notification__icon {
+      @apply text-blue-500;
+    }
+  }
+
+  &.notification--warn {
+    @apply border-yellow-500;
+
+    .notification__icon {
+      @apply text-yellow-500;
+    }
+  }
+
+  &.notification--default {
+    @apply border-gray-600;
+
+    .notification__icon {
+      @apply text-gray-500;
+    }
+  }
+
+  &.notification--danger {
+    @apply border-red-500;
+
+    .notification__icon {
+      @apply text-red-500;
+    }
+  }
+}
+
+.notification__title {
+  @apply font-semibold text-gray-600 leading-none mb-1;
+}
+
+.notification__message {
+  @apply text-gray-600 text-left my-0 whitespace-pre-line
+}

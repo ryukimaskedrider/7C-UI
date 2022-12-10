@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>7C Systems</title>
+  <base href="/">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <style type="text/css">
+    .body-bg {
+      background-color: #EEF1EE;
+    }
+    #splash-screen {
+      display: block;
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: EEF1EE;
+      z-index: 99999;
+      pointer-events: none;
+    }
+
+    #splash-screen .center {
+      display: block;
+      width: 100%;
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    #splash-screen .logo {
+      width: 128px;
+      text-align: center;
+      margin: 0 auto;
+    }
+
+    #splash-screen .logo img {
+      width: 200px;
+    }
+
+    .loading {
+      width: 150px;
+      display: block;
+      height: 2px;
+      margin: 28px auto;
+      border-radius: 2px;
+      background-color: #cfcfcf;
+      position: relative;
+      overflow: hidden;
+      z-index: 1;
+    }
+
+    .loading:before {
+      content: "";
+      height: 3px;
+      width: 68px;
+      position: absolute;
+      -webkit-transform: translate(-34px, 0);
+      -ms-transform: translate(-34px, 0);
+      transform: translate(-34px, 0);
+      background-color: #0073b1;
+      border-radius: 2px;
+      -webkit-animation: initial-loading 1.5s infinite ease;
+      animation: bluebar 1.4s infinite ease;
+    }
+
+    @-webkit-keyframes bluebar {
+      0% {
+        left: 0;
+      }
+      50% {
+        left: 100%;
+      }
+      100% {
+        left: 0;
+      }
+    }
+    @keyframes bluebar {
+      0% {
+        left: 0;
+      }
+      50% {
+        left: 100%;
+      }
+      100% {
+        left: 0;
+      }
+    }
+  </style>
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<body class="body-bg">
+  <noscript>
+    <p>Please enable your javascript</p>
+  </noscript>
+
+  <splash-screen id="splash-screen">
+    <div class="center">
+      <div class="logo">
+        <img
+          width="128"
+          src="assets/images/logo/splash-logo.png"
+          alt="7c Logo"
+        />
+      </div>
+      <span class="loading"></span>
+    </div>
+  </splash-screen>
+
+  <div id="page--loader"></div>
+  <app-root></app-root>
+</body>
+</html>

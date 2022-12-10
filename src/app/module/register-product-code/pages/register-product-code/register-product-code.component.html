@@ -1,0 +1,189 @@
+<div class="container mx-auto px-4">
+  <div class="py-5">
+    <h1 class="text-4xl font-bold">Register Product Code</h1>
+    <div class="w-full m-auto sm:w-4/6">
+      <div class="py-5 sm:px-40">
+        <form
+          class="text-center"
+          role="form"
+          id="form"
+          [formGroup]="form"
+          (ngSubmit)="form.valid && onSubmit(form.value)"
+        >
+          <mat-form-field appearance="outline" color="primary" class="w-full">
+            <mat-label>Product Code</mat-label>
+            <input
+              type="text"
+              formControlName="code"
+              placeholder="Product Code"
+              matInput
+              aria-label="Product Code"
+            />
+            <mat-error *ngIf="codeControl.errors?.required">
+              Product Code is required
+            </mat-error>
+          </mat-form-field>
+          <div>
+            <button
+                class="w-full sm:w-1/2 text-xl"
+                type="submit"
+                mat-raised-button
+                color="primary"
+                [disabled]="form.invalid || submitLoading"
+              >
+              Register
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="mt-5">
+      <div class="w-full sm:w-1/2 m-auto">
+        <div class="p-5 rounded-3xl shadow-md bg-white text-center">
+          <div
+            fxLayout="row wrap"
+            fxLayoutAlign="start center"
+          >
+            <div
+              class="py-2 w-full"
+              fxLayout="row wrap"
+              fxLayoutAlign="space-between center"
+            >
+              <h2 class="text-2xl m-0">Registered</h2>
+              <div>
+                <button
+                  mat-icon-button
+                  color="accent"
+                  (click)="filterPanel = !filterPanel"
+                  [matTooltip]="filterPanel ? 'Close Filter Panel' : 'Open Filter Panel'"
+                  [matTooltipPosition]="'above'"
+                  type="button"
+                >
+                  <mat-icon>{{ filterPanel ? 'close' : 'filter_list' }}</mat-icon>
+                </button>
+                <app-list-menu (reload)="onReload()"></app-list-menu>
+              </div>
+            </div>
+          </div>
+          <app-register-product-filter
+            [showPanel]="filterPanel"
+            (appFilter)="onAppFilter($event)"
+            (appClearFilter)="onAppFilteredClear($event)"
+          ></app-register-product-filter>
+          <mat-divider></mat-divider>
+          <mat-card-content class="relative mb-0">
+            <div class="w-full overflow-x-auto">
+              <div *ngIf="loading">
+                <mat-progress-bar
+                mode="indeterminate"
+              ></mat-progress-bar>
+              </div>
+              <table
+                mat-table
+                [dataSource]="dataSource"
+                matSort
+                (matSortChange)="onSort($event)"
+                class="w-full"
+                aria-label="Product List"
+              >
+
+                <ng-container matColumnDef="user.fullname">
+                  <th
+                    scope="col"
+                    mat-header-cell
+                    *matHeaderCellDef
+                    class="uppercase font-bold"
+                  >
+                    Register By
+                  </th>
+                  <td mat-cell *matCellDef="let element" class="text-left text-sm">
+                    <div>
+                      {{ element.user.fullname }}
+                    </div>
+                    <div class="text-gray-400">
+                      {{ element.productCode.date_used | date:'MMM d, y' }}
+                    </div>
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="productCode.product.name">
+                  <th
+                    scope="col"
+                    mat-header-cell
+                    *matHeaderCellDef
+                    class="uppercase font-bold"
+                  >
+                    Product Name
+                  </th>
+                  <td mat-cell *matCellDef="let element" class="uppercase text-left">
+                    {{ element.productCode.product.name }}
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="productCode.code">
+                  <th
+                    scope="col"
+                    mat-header-cell
+                    *matHeaderCellDef
+                    mat-sort-header
+                    class="uppercase font-bold"
+                  >
+                    Product Code
+                  </th>
+                  <td mat-cell *matCellDef="let element" class="uppercase text-left">
+                    {{ element.productCode.code }}
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="gain">
+                  <th
+                    scope="col"
+                    mat-header-cell
+                    *matHeaderCellDef
+                    mat-sort-header
+                    class="uppercase font-bold"
+                  >
+                    Income
+                  </th>
+                  <td mat-cell *matCellDef="let element" class="text-right">
+                    {{ element.gain | currency:'PHP':'symbol-narrow'}}
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="points">
+                  <th
+                    scope="col"
+                    mat-header-cell
+                    *matHeaderCellDef
+                    mat-sort-header
+                    class="uppercase font-bold"
+                  >
+                    Points
+                  </th>
+                  <td mat-cell *matCellDef="let element" class="text-right text-green-800">
+                    {{ element.points || '--' }}
+                  </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="columns"></tr>
+                <tr mat-row *matRowDef="let row; columns: columns;"></tr>
+
+                <tr class="mat-row" *matNoDataRow>
+                  <td class="mat-cell" [attr.colspan]="columns.length">
+                    No results found.
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </mat-card-content>
+          <mat-paginator
+            [disabled]="loading"
+            [pageSizeOptions]="pageSizeOPtions"
+            [pageSize]="pageState.limit"
+            (page)="fetchData($event)"
+          ></mat-paginator>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

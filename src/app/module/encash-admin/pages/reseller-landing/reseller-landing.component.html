@@ -1,0 +1,327 @@
+<div class="py-5">
+  <h1 class="text-4xl font-bold">Encash</h1>
+
+  <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-3">
+    <!-- Fields -->
+    <div>
+      <div class="p-5 sm:p-10 rounded-3xl shadow-md bg-white mb-3 text-left">
+        <span class="text-xl">Available Income:
+          <span class="text-green-800 font-bold text-2xl">{{ availablePoints | currency:'PHP':'symbol-narrow' }}</span>
+        </span>
+      </div>
+      <div class="p-5 sm:p-10 rounded-3xl shadow-md bg-white text-center">
+        <div
+          fxLayout="row wrap"
+          fxLayoutAlign="start center"
+        >
+          <div
+            class="py-2 w-full"
+            fxLayout="row wrap"
+            fxLayoutAlign="start center"
+          >
+            <h2 class="text-2xl m-0">Cash Out</h2>
+            <span class="flex-align-end"></span>
+          </div>
+        </div>
+        <mat-divider></mat-divider>
+        <div class="mt-5">
+            <form
+              role="form"
+              id="__form"
+              [formGroup]="form"
+              (ngSubmit)="form.valid && onSubmit(form.value)"
+            >
+            <mat-form-field appearance="outline" color="primary" class="w-full">
+              <mat-label>Amount</mat-label>
+              <input
+                type="text"
+                formControlName="points"
+                placeholder="Amount"
+                matInput
+                aria-label="Amount"
+              />
+              <mat-error *ngIf="pointsControl.errors?.required">
+                Amount is required
+              </mat-error>
+              <mat-error *ngIf="pointsControl.errors?.numeric">
+                Amount must be numeric
+              </mat-error>
+              <mat-error *ngIf="pointsControl.errors?.insufficient">
+                Amount is insufficient
+              </mat-error>
+            </mat-form-field>
+            <div class="mt-8">
+              <button
+                  class="w-full"
+                  type="submit"
+                  mat-raised-button
+                  color="primary"
+                  [disabled]="form.invalid || submitLoading"
+                >
+                Submit
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- List -->
+    <div class="col-span-2">
+      <div class="p-5 sm:p-10 rounded-3xl shadow-md bg-white text-center">
+        <div
+          fxLayout="row wrap"
+          fxLayoutAlign="start center"
+        >
+          <div
+            class="py-2 w-full"
+            fxLayout="row wrap"
+            fxLayoutAlign="space-between center"
+          >
+            <h2 class="text-2xl m-0">Cash Out List</h2>
+            <div>
+              <button
+                mat-icon-button
+                color="accent"
+                (click)="filterPanel = !filterPanel"
+                [matTooltip]="filterPanel ? 'Close Filter Panel' : 'Open Filter Panel'"
+                [matTooltipPosition]="'above'"
+                type="button"
+              >
+                <mat-icon>{{ filterPanel ? 'close' : 'filter_list' }}</mat-icon>
+              </button>
+              <app-list-menu (reload)="onReload()"></app-list-menu>
+            </div>
+          </div>
+        </div>
+        <app-encash-filter
+          [showPanel]="filterPanel"
+          (appFilter)="onAppFilter($event)"
+          (appClearFilter)="onAppFilteredClear($event)"
+        ></app-encash-filter>
+        <mat-divider></mat-divider>
+        <mat-card-content class="relative mb-0">
+          <div class="w-full overflow-x-auto">
+            <div *ngIf="loading">
+              <mat-progress-bar
+              mode="indeterminate"
+            ></mat-progress-bar>
+            </div>
+            <table
+              mat-table
+              [dataSource]="dataSource"
+              matSort
+              (matSortChange)="onSort($event)"
+              class="w-full"
+              aria-label="List"
+            >
+
+              <ng-container matColumnDef="id">
+                <th
+                  scope="col"
+                  mat-header-cell
+                  *matHeaderCellDef
+                  mat-sort-header
+                  class="uppercase font-bold"
+                >
+                  ID
+                </th>
+                <td mat-cell *matCellDef="let element" class="uppercase text-left">
+                  {{ element.id }}
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="voucher.description">
+                <th
+                  scope="col"
+                  mat-header-cell
+                  *matHeaderCellDef
+                  mat-sort-header
+                  class="uppercase font-bold"
+                >
+                  Voucher
+                </th>
+                <td mat-cell *matCellDef="let element" class="uppercase text-left">
+                  {{ element.voucher.description ?? 'By Amount' }}
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="points">
+                <th
+                  scope="col"
+                  mat-header-cell
+                  *matHeaderCellDef
+                  mat-sort-header
+                  class="uppercase font-bold"
+                >
+                Amount
+                </th>
+                <td mat-cell *matCellDef="let element" class="uppercase text-left">
+                  {{ element.points | currency:'PHP':'symbol-narrow' }}
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="status">
+                <th
+                  scope="col"
+                  mat-header-cell
+                  *matHeaderCellDef
+                  mat-sort-header
+                  class="uppercase font-bold"
+                >
+                Status
+                </th>
+                <td mat-cell *matCellDef="let element" class="uppercase text-center">
+                  {{ element.status ?? '--' }}
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="reason">
+                <th
+                  scope="col"
+                  mat-header-cell
+                  *matHeaderCellDef
+                  mat-sort-header
+                  class="uppercase font-bold"
+                >
+                Reason
+                </th>
+                <td mat-cell *matCellDef="let element" class="uppercase text-center">
+                  {{ element.reason ?? '--' }}
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="approveBy.name">
+                <th
+                  scope="col"
+                  mat-header-cell
+                  *matHeaderCellDef
+                  mat-sort-header
+                  class="uppercase font-bold"
+                >
+                  Approver
+                </th>
+                <td mat-cell *matCellDef="let element" class="uppercase text-center" >
+                  {{ element.approveBy.name ?? '--' }}
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="created_at">
+                <th
+                  scope="col"
+                  mat-header-cell
+                  *matHeaderCellDef
+                  mat-sort-header
+                  class="uppercase font-bold"
+                >
+                  Created
+                </th>
+                <td mat-cell *matCellDef="let element" class="text-center">
+                  {{ element.created_at | date:'MMM d, y' }}
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="date_signed">
+                <th
+                  scope="col"
+                  mat-header-cell
+                  *matHeaderCellDef
+                  mat-sort-header
+                  class="uppercase font-bold"
+                >
+                  Date Approved/Rejected
+                </th>
+                <td mat-cell *matCellDef="let element" class="text-center">
+                  {{ element.date_signed ? (element.date_signed | date:'MMM d, y') : '--'}}
+                </td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="columns"></tr>
+              <tr mat-row *matRowDef="let row; columns: columns;" [ngClass]="getStatus(row.status)"></tr>
+
+              <tr class="mat-row" *matNoDataRow>
+                <td class="mat-cell" [attr.colspan]="columns.length">
+                  No results found.
+                </td>
+              </tr>
+            </table>
+          </div>
+        </mat-card-content>
+        <mat-paginator
+          [disabled]="loading"
+          [pageSizeOptions]="pageSizeOPtions"
+          [pageSize]="pageState.limit"
+          (page)="fetchData($event)"
+        ></mat-paginator>
+      </div>
+    </div>
+  </div>
+  <div class="p-5 sm:p-10 rounded-3xl shadow-md bg-white text-left mt-5">
+    <div
+      fxLayout="row wrap"
+      fxLayoutAlign="start center"
+    >
+      <div
+        class="py-2 w-full"
+        fxLayout="row wrap"
+        fxLayoutAlign="space-between center"
+      >
+        <h2 class="text-2xl m-0">Vouchers</h2>
+        <div>
+          <button
+            mat-icon-button
+            color="accent"
+            (click)="filterVoucherPanel = !filterVoucherPanel"
+            [matTooltip]="filterPanel ? 'Close Filter Panel' : 'Open Filter Panel'"
+            [matTooltipPosition]="'above'"
+            type="button"
+          >
+            <mat-icon>{{ filterVoucherPanel ? 'close' : 'filter_list' }}</mat-icon>
+          </button>
+          <app-list-menu (reload)="onReload()"></app-list-menu>
+        </div>
+      </div>
+    </div>
+    <app-voucher-filter
+      [categories]="voucherCategoryOptions"
+      [showPanel]="filterVoucherPanel"
+      (appFilter)="onVoucherAppFilter($event)"
+      (appClearFilter)="onVoucherAppFilteredClear($event)"
+    ></app-voucher-filter>
+    <mat-divider></mat-divider>
+    <mat-card-content class="relative mb-0">
+      <div fxLayout="row wrap" class="w-full">
+        <div *ngFor="let item of vouchers"
+          class="p-3"
+          fxFlex="100"
+          fxFlex.gt-sm="25">
+          <div class="cardWrap w-full">
+            <div class="card cardLeft w-3/4">
+              <div class="header">{{item.voucherCategory.name}}</div>
+              <div class="title">
+                <div class="text-base font-semibold w-full">{{item.description}}</div>
+                <span>description</span>
+              </div>
+              <div class="name">
+                <div class="text-lg text-green-800">{{item.points | currency:'PHP':'symbol-narrow' }}</div>
+                <span>Amount</span>
+              </div>
+            </div>
+            <div class="card cardRight">
+              <div class="button">
+                <button
+                    class="w-full"
+                    (click)="useVoucher(item.id, item.points)"
+                    mat-raised-button
+                    color="primary"
+                  >
+                  USE
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </mat-card-content>
+  </div>
+</div>

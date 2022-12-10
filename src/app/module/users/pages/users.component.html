@@ -1,0 +1,433 @@
+<div class="container mx-auto px-4">
+  <div class="py-5">
+    <h1 class="text-4xl font-bold">Users</h1>
+
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-3">
+      <!-- Fields -->
+      <div>
+        <div class="p-5 sm:p-10 rounded-3xl shadow-md bg-white text-center">
+          <div
+            fxLayout="row wrap"
+            fxLayoutAlign="start center"
+          >
+            <div
+              class="py-2 w-full"
+              fxLayout="row wrap"
+              fxLayoutAlign="start center"
+            >
+              <h2 class="text-2xl m-0">{{idControl.value ? 'Edit' : 'Add'}}</h2>
+              <span class="flex-align-end"></span>
+            </div>
+          </div>
+          <mat-divider></mat-divider>
+          <div class="mt-5">
+            <form
+              role="form"
+              id="product__form"
+              [formGroup]="userForm"
+              (ngSubmit)="userForm.valid && onSubmit(userForm.value)"
+            >
+              <ng-container *ngIf="idControl.value; else select">
+                <mat-form-field appearance="outline" color="primary" class="w-full">
+                  <mat-label>Package Code</mat-label>
+                  <input
+                    type="text"
+                    formControlName="package_code_id"
+                    placeholder="Package Code"
+                    matInput
+                    aria-label="Package Code"
+                    readonly
+                  />
+                </mat-form-field>
+              </ng-container>
+              <ng-template #select>
+                <mat-form-field appearance="outline" color="primary" class="w-full">
+                  <mat-label>Package Code</mat-label>
+                  <mat-select [formControl]="packageCodeIdControl" name="pacakgeCode" #select>
+                    <mat-option>
+                      <ngx-mat-select-search
+                        ngDefaultControl
+                        [formControl]="searchControl"
+                        placeholderLabel="Search..."
+                        noEntriesFoundLabel="'No records found.'"
+                      ></ngx-mat-select-search>
+                    </mat-option>
+                    <mat-option
+                      *ngFor="let item of filteredItems | async"
+                      [value]="item.value"
+                      [disabled]="item?.disabled"
+                    >
+                      {{item.label}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </ng-template>
+
+              <!-- <mat-form-field appearance="outline" color="primary" class="w-full">
+                <mat-label>Role</mat-label>
+                <mat-select [formControl]="roleControl" name="role">
+                  <mat-option
+                    *ngFor="let item of roles"
+                    [value]="item.value"
+                  >
+                    {{item.label | titlecase}}
+                  </mat-option>
+                </mat-select>
+                <mat-error *ngIf="roleControl.errors?.required">
+                  Role is required
+                </mat-error>
+              </mat-form-field> -->
+
+              <mat-form-field appearance="outline" color="primary" class="w-full">
+                <mat-label>First Name</mat-label>
+                <input
+                  type="text"
+                  formControlName="first_name"
+                  placeholder="First Name"
+                  matInput
+                  aria-label="First Name"
+                />
+                <mat-error *ngIf="firstNameControl.errors?.required">
+                  First Name is required
+                </mat-error>
+                <mat-error *ngIf="firstNameControl.errors?.minlength">
+                  First Name min length is 2
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" color="primary" class="w-full">
+                <mat-label>Last Name</mat-label>
+                <input
+                  type="text"
+                  formControlName="last_name"
+                  placeholder="Last Name"
+                  matInput
+                  aria-label="Last Name"
+                />
+                <mat-error *ngIf="lastNameControl.errors?.required">
+                  Last Name is required
+                </mat-error>
+                <mat-error *ngIf="lastNameControl.errors?.minlength">
+                  Last Name min length is 2
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" color="primary" class="w-full">
+                <mat-label>Email</mat-label>
+                <input
+                  matInput
+                  formControlName="email"
+                  type="text"
+                  placeholder="Email"
+                  aria-label="Email"
+                />
+                <mat-error *ngIf="emailControl.errors?.required">
+                  Email required
+                </mat-error>
+                <mat-error *ngIf="emailControl.errors?.email">
+                  Invalid Email
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" color="primary" class="w-full">
+                <mat-label>Mobile Number</mat-label>
+                <input
+                  matInput
+                  formControlName="mobile_number"
+                  type="text"
+                  placeholder="Mobile (09xxxxxxxxx)"
+                  aria-label="Mobile Number"
+                />
+                <mat-error *ngIf="mobileControl.errors?.required">
+                Mobile Number is required
+                </mat-error>
+                <mat-error *ngIf="mobileControl.errors?.minlength">
+                  Mobile Number min length is 11.
+                </mat-error>
+                <mat-error *ngIf="mobileControl.errors?.maxlength">
+                  Mobile Number max length is 11.
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" color="primary" class="w-full">
+                <mat-label>Address</mat-label>
+                <input
+                  matInput
+                  formControlName="address"
+                  type="text"
+                  placeholder="Address"
+                  aria-label="Address"
+                />
+                <mat-error *ngIf="addressControl.errors?.required">
+                Address is required
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" color="primary" class="w-full">
+                <mat-label>{{ idControl.value ? 'Update Password' : 'Password'}}</mat-label>
+                <input
+                  matInput
+                  formControlName="password"
+                  type="text"
+                  [placeholder]="idControl.value ? 'Update Password' : 'Password'"
+                  aria-label="Password"
+                />
+                <mat-error *ngIf="passwordControl.errors?.required">
+                Address is required
+                </mat-error>
+                <mat-error *ngIf="passwordControl.errors?.minlength">
+                  Addresss min length is 6.
+                </mat-error>
+              </mat-form-field>
+
+              <div class="mt-5">
+                <button
+                    class="w-full"
+                    type="submit"
+                    mat-raised-button
+                    color="primary"
+                    [disabled]="userForm.invalid || submitLoading"
+                  >
+                  {{ idControl.value ? 'Update' : 'Submit' }}
+                </button>
+                <div *ngIf="idControl.value" class="mt-5">
+                  <button
+                      class="w-full"
+                      type="submit"
+                      mat-raised-button
+                      color="primary"
+                      (click)="onCancel()"
+                    >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- List -->
+      <div class="col-span-2">
+        <div class="p-5 sm:p-10 rounded-3xl shadow-md bg-white text-center">
+          <div
+            fxLayout="row wrap"
+            fxLayoutAlign="start center"
+          >
+            <div
+              class="py-2 w-full"
+              fxLayout="row wrap"
+              fxLayoutAlign="space-between center"
+            >
+              <h2 class="text-2xl m-0">List</h2>
+              <div>
+                <button
+                  mat-icon-button
+                  color="accent"
+                  (click)="filterPanel = !filterPanel"
+                  [matTooltip]="filterPanel ? 'Close Filter Panel' : 'Open Filter Panel'"
+                  [matTooltipPosition]="'above'"
+                  type="button"
+                >
+                  <mat-icon>{{ filterPanel ? 'close' : 'filter_list' }}</mat-icon>
+                </button>
+                <app-list-menu (reload)="onReload()"></app-list-menu>
+              </div>
+            </div>
+          </div>
+
+          <app-user-filter
+            [showPanel]="filterPanel"
+            (appFilter)="onAppFilter($event)"
+            (appClearFilter)="onAppFilteredClear($event)"
+          ></app-user-filter>
+
+          <mat-divider></mat-divider>
+          <mat-card-content class="relative mb-0">
+            <div class="w-full overflow-x-auto">
+              <div *ngIf="loading">
+                <mat-progress-bar
+                mode="indeterminate"
+              ></mat-progress-bar>
+              </div>
+              <table
+                mat-table
+                [dataSource]="dataSource"
+                matSort
+                (matSortChange)="onSort($event)"
+                class="w-full"
+                aria-label="Product List"
+              >
+
+                <ng-container matColumnDef="id">
+                  <th
+                    scope="col"
+                    mat-header-cell
+                    *matHeaderCellDef
+                    mat-sort-header
+                    class="uppercase font-bold"
+                  >
+                    ID
+                  </th>
+                  <td mat-cell *matCellDef="let element" class="uppercase text-left">
+                    {{ element.id }}
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="package.code">
+                  <th
+                    scope="col"
+                    mat-header-cell
+                    *matHeaderCellDef
+                    mat-sort-header
+                    class="uppercase font-bold"
+                  >
+                    Package Code
+                  </th>
+                  <td mat-cell *matCellDef="let element" class="text-left">
+                    {{ element.package.code || '--' }}
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="fullname">
+                  <th
+                    scope="col"
+                    mat-header-cell
+                    *matHeaderCellDef
+                    mat-sort-header
+                    class="uppercase font-bold"
+                  >
+                    Fullname
+                  </th>
+                  <td mat-cell *matCellDef="let element" class="text-left">
+                    {{ element.fullname || '--' }}
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="email">
+                  <th
+                    scope="col"
+                    mat-header-cell
+                    *matHeaderCellDef
+                    mat-sort-header
+                    class="uppercase font-bold"
+                  >
+                    Email
+                  </th>
+                  <td mat-cell *matCellDef="let element" class="text-left">
+                    {{ element.email || '--' }}
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="mobile_number">
+                  <th
+                    scope="col"
+                    mat-header-cell
+                    *matHeaderCellDef
+                    mat-sort-header
+                    class="uppercase font-bold"
+                  >
+                    Mobile Number
+                  </th>
+                  <td mat-cell *matCellDef="let element" class="text-left">
+                    {{ element.mobile_number || '--' }}
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="address">
+                  <th
+                    scope="col"
+                    mat-header-cell
+                    *matHeaderCellDef
+                    mat-sort-header
+                    class="uppercase font-bold"
+                  >
+                    Address
+                  </th>
+                  <td mat-cell *matCellDef="let element" class="text-left">
+                    {{ element.address || '--' }}
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="created_at">
+                  <th
+                    scope="col"
+                    mat-header-cell
+                    *matHeaderCellDef
+                    mat-sort-header
+                    class="uppercase font-bold"
+                  >
+                    Created At
+                  </th>
+                  <td mat-cell *matCellDef="let element" class="text-left">
+                    {{ element.created_at | date:'MMM d, y' }}
+                  </td>
+                </ng-container>
+
+                <!-- ACTION Column -->
+                <ng-container matColumnDef="action">
+                  <th scope="col"
+                    mat-header-cell
+                    *matHeaderCellDef
+                    class="uppercase font-bold">
+                    Action
+                  </th>
+                  <td mat-cell *matCellDef="let element">
+                    <button
+                      mat-icon-button
+                      [matMenuTriggerFor]="menu"
+                      [matMenuTriggerData]="{data: element}"
+                      aria-label="Action Menu"
+                    >
+                      <mat-icon>more_vert</mat-icon>
+                    </button>
+                  </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="columns"></tr>
+                <tr mat-row *matRowDef="let row; columns: columns;" [ngClass]="{'bg-slate-300 text-gray-200': row.is_active == false }" class="hover:bg-blue-200 cursor-pointer" (click)="onEdit(row)"></tr>
+
+                <tr class="mat-row" *matNoDataRow>
+                  <td class="mat-cell" [attr.colspan]="columns.length">
+                    No results found.
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </mat-card-content>
+          <mat-paginator
+            [disabled]="loading"
+            [pageSizeOptions]="pageSizeOPtions"
+            [pageSize]="pageState.limit"
+            (page)="fetchData($event)"
+          ></mat-paginator>
+        </div>
+
+        <!-- Action Menu -->
+        <mat-menu #menu="matMenu" xPosition="before">
+          <ng-template
+            matMenuContent
+            let-data="data"
+          >
+            <button mat-menu-item
+              *ngIf="data.is_active; else activate"
+              (click)="onActivate(data.id, data.is_active)">
+              <mat-icon>person_off</mat-icon>
+              <span>Deactivate</span>
+            </button>
+
+            <ng-template #activate>
+              <button
+                mat-menu-item
+                (click)="onActivate(data.id, data.is_active)"
+              >
+              <mat-icon>person_add</mat-icon>
+              <span>Activate</span>
+              </button>
+            </ng-template>
+          </ng-template>
+        </mat-menu>
+      </div>
+    </div>
+  </div>
+</div>
